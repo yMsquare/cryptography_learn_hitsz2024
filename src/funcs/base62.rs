@@ -21,39 +21,13 @@ pub fn base62_encode(input: &str)->String{
     return ret;
 }
 
-//pub fn base62_decode(input: &str)->String{
-//    let mut ret = String::new();
-    // let pairs: Vec<String> = input
-    // .chars() // 获取字符迭代器
-    // .collect::<Vec<_>>() // 收集为向量
-    // .chunks(2) // 每两字符一组
-    // .map(|chunk| chunk.iter().collect::<String>()) // 将每组字符转换为字符串
-    // .collect();
-    // for pair in pairs{
-    //     let decoded = match pair {
-    //         =>{
-
-    //         }
-    //     };
-//     let mut padded =String::new();
-//     //密文不足4位，前面补0
-//     if input.len() < 4{
-//         for _ in 0..=input.len(){
-//             padded.push('0');
-//         }
-//     }
-//     padded.push_str(input);
-//     //密文为奇数
-//     // }
-//     return ret;
-// }
-
 pub fn base62_decode(input: &str) -> String {
     let mut ret = String::new();
 
     // 处理输入的长度
     let mut padded = input.to_string();
-    // 密文不足4位，前面补0
+
+    // 密文长度小于4，前面补0
     while padded.len() % 4 != 0 {
         padded.insert(0, '0');
     }

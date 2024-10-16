@@ -6,7 +6,7 @@ pub fn encode_rsa(encoded_text :&String, e:&BigInt, n:&BigInt)->String{
     let mut ret = String::new();
     let grouped = group_by_four(encoded_text);
     let grouped_size = super::decode_rsa::log2_bigint(n);
-    println!("grouped cipher after encoding:{:?}",grouped);
+    println!("grouped cipher after base62 encoding:{:?}",grouped);
     //分组后就可以加密了吧？
     for m in grouped{
         let tmp = key_gen::mod_exp(&m,e,n);
@@ -24,14 +24,15 @@ pub fn encode_rsa(encoded_text :&String, e:&BigInt, n:&BigInt)->String{
 fn group_by_four(text: &String)->Vec<BigInt>{
     let mut encode_chars:Vec<_>= text.chars().collect();
     let mut ret :Vec<BigInt>  = Vec::new();
-    println!("the len of cipher:{}",encode_chars.len());
-    //缺少字符，人为添加一个两位数的。解密时需要删除
+    //缺少字符，意味着最后一组可能只有1个字母（对应base62编码下的2位十进制数）
+    //需要人为添加一个两位十进制数凑齐4位(不属于base62编码集，所以这个十进制数要大于61)。
+    //解密后解码base62时需要删除这个人为添加的字符（或者直接在解码base62的函数里无视这种非法字符）
     if encode_chars.len() % 4 != 0{
        encode_chars.push('6');
        encode_chars.push('2');
     }
-    println!("the len of cipher pushed:{}",encode_chars.len());
-    //4个一组，转化为i32再转化为BigInt便于后续的加密计算。
+    println!("the len of padded cipher:{}",encode_chars.len());
+    //4个一组，转化为BigInt便于后续的加密计算。
     for c in encode_chars.chunks(4){
         let mut tmp = String::new();
         for i in c{
